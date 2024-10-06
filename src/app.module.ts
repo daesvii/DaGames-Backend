@@ -1,7 +1,5 @@
 import { RegisterModule } from './register/register.module';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './register/entity/user.entity';
 import { dbConfig } from './config/config';
@@ -15,7 +13,7 @@ import { dbConfig } from './config/config';
     }),
     RegisterModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
