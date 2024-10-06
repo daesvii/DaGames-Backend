@@ -6,9 +6,10 @@ import {
   RegisterRequestDto,
   RegisterResponseDto,
 } from 'src/register/dto/register.dto';
+import { IRegisterService } from '../interface/register.service.interface';
 
 @Injectable()
-export class RegisterService {
+export class RegisterService implements IRegisterService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
