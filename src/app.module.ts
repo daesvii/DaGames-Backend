@@ -1,7 +1,8 @@
+import { LoginModule } from './login/login.module';
 import { RegisterModule } from './register/register.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './register/entity/user.entity';
+import { User } from './entities/user.entity';
 import { dbConfig } from './config/config';
 
 @Module({
@@ -12,6 +13,7 @@ import { dbConfig } from './config/config';
       synchronize: true,
     }),
     RegisterModule,
+    LoginModule,
   ],
   controllers: [],
   providers: [],

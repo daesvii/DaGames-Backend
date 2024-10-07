@@ -1,5 +1,5 @@
 import { Injectable, ConflictException } from '@nestjs/common';
-import { User } from 'src/register/entity/user.entity';
+import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -7,6 +7,7 @@ import {
   RegisterResponseDto,
 } from 'src/register/dto/register.dto';
 import { IRegisterService } from '../interface/register.service.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class RegisterService implements IRegisterService {
@@ -18,10 +19,26 @@ export class RegisterService implements IRegisterService {
   async createUser(userData: RegisterRequestDto): Promise<RegisterResponseDto> {
     await this.checkForExistingUser(userData);
 
-    const user = this.mapToUser(userData);
+    const hashedPassword = await this.hashPassword(userData.password);
+    const user = this.mapToUser(userData, hashedPassword);
     const savedUser = await this.userRepository.save(user);
 
     return this.mapToUserResponse(savedUser);
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    return bcrypt.hash(password, saltRounds);
+  }
+
+  private mapToUser(
+    userData: RegisterRequestDto,
+    hashedPassword: string,
+  ): User {
+    const user = new User();
+    Object.assign(user, userData);
+    user.password = hashedPassword;
+    return user;
   }
 
   private async checkForExistingUser(
@@ -57,12 +74,6 @@ export class RegisterService implements IRegisterService {
     if (existingUser.documentNumber === userData.documentNumber) {
       throw new ConflictException('El número de documento ya está en uso.');
     }
-  }
-
-  private mapToUser(userData: RegisterRequestDto): User {
-    const user = new User();
-    Object.assign(user, userData);
-    return user;
   }
 
   private mapToUserResponse(user: User): RegisterResponseDto {
