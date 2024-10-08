@@ -6,8 +6,9 @@ import { LoginService } from '../service/impl/login.service';
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
-  @Post()
-  async login(@Body() loginData: LoginRequestDto): Promise<boolean> {
-    return this.loginService.login(loginData);
+  @Post('')
+  async login(@Body() loginDto: LoginRequestDto) {
+    const { username } = await this.loginService.login(loginDto);
+    return { username };
   }
 }

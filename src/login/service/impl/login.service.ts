@@ -13,7 +13,7 @@ export class LoginService implements ILoginService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async login(userData: LoginRequestDto): Promise<boolean> {
+  async login(userData: LoginRequestDto): Promise<{ username: string }> {
     const user = await this.findUser(userData);
     if (!user) {
       throw new UnauthorizedException('Credenciales incorrectas.');
@@ -26,7 +26,7 @@ export class LoginService implements ILoginService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales incorrectas.');
     }
-    return true;
+    return { username: user.username };
   }
 
   private async findUser(userData: LoginRequestDto): Promise<User | undefined> {
